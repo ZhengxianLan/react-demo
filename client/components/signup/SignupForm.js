@@ -16,12 +16,16 @@ class SignupForm extends React.Component{
   }
   onChange(e){
     this.setState({
+      /*
+       * react 更新 state 的时候只看新部分的 key 对应的value变化，
+       * 对于新对象中不存在的 key ，默认维持原样
+      * */
       [e.target.name]:e.target.value
     });
   }
   onSubmit(e){
     e.preventDefault();
-    console.log(this.state);
+    this.props.userSignupRequest(this.state);
   }
   render(){
 	const options =map( timezones,(k,v) => <option value={v} key={k}>{k}</option>);
@@ -65,7 +69,7 @@ class SignupForm extends React.Component{
           />
         </div>
         <div className="form-group">
-          <label className="control-label" htmlfor="timezone">Timezone</label>
+          <label className="control-label" htmlFor="timezone">Timezone</label>
           <select
             onChange={this.onChange}
             value={this.state.timezone}
@@ -80,6 +84,11 @@ class SignupForm extends React.Component{
       </form>
   );
   }
+
+
 }
+  SignupForm.propTypes={
+    userSignupRequest: React.PropTypes.func.isRequired
+  }
 
 export default SignupForm;
