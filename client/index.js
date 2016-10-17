@@ -8,12 +8,16 @@ import {
 } from 'react-router';
 import { Provider } from 'react-redux';
 import thunk from 'redux-thunk';
-import { applyMiddleware,createStore } from 'redux';
+import { applyMiddleware,createStore,compose } from 'redux';
 import routes from './routes';
+import rootReducer from './rootReducer';
 
 const store = createStore(
-  (state={} ) => state,
-  applyMiddleware(thunk)
+  rootReducer,
+  compose(
+    applyMiddleware(thunk),
+    window.devToolsExtension ? window.devToolsExtension() : f => f
+  )
 );
 
 render(

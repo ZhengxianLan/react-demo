@@ -6,17 +6,19 @@ import {
 import {
   userSignupRequest
 } from '../../actions/signupActions';
+import { addFlashMessage } from '../../actions/flashMessages'
 
 class SignupPage extends React.Component {
   render() {
     const {
-      userSignupRequest
+      userSignupRequest,
+      addFlashMessage
     } = this.props;
     return (
       <div className="row">
         <div className="col-md-4 col-md-offset-4">
           <h1>Sign up page</h1>
-          <SignupForm userSignupRequest={userSignupRequest}/>
+          <SignupForm userSignupRequest={userSignupRequest} addFlashMessage={addFlashMessage}/>
         </div>
       </div>
     );
@@ -24,8 +26,10 @@ class SignupPage extends React.Component {
 }
 
 SignupPage.propTypes = {
-  userSignupRequest: React.PropTypes.func.isRequired
+  userSignupRequest: React.PropTypes.func.isRequired,
+  addFlashMessage: React.PropTypes.func.isRequired
 }
 export default connect(null, {
-  userSignupRequest
+  userSignupRequest,
+  addFlashMessage
 })(SignupPage);
