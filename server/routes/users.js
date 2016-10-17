@@ -11,9 +11,7 @@ router.post('/', (req, res) => {
   if (!isValid) {
     res.status(400).json(errors);
   } else {
-    res.status(201).json({
-      'signup': 'success'
-    })
+    res.end('{"success" : "Signup Successfully", "status" : 201}');
   }
 })
 export default router;
