@@ -12,7 +12,7 @@ function validateInput(data,otherValidations){
 	return User.query({
 		where: {email: data.email},
 		orWhere: { username: data.username }
-	}).fetch(),then(user => {
+	}).fetch().then(user => {
 		if(user){
 			if(user.get('email') === data.email) {
 				errors.email = 'There is user with such email';
@@ -29,8 +29,20 @@ function validateInput(data,otherValidations){
 
 }
 
+
+router.get('/:identifier',(req,res) => {
+  let identifier = req.params.identifier;
+  User.query({
+    select: [ 'username','email' ],
+    where: { email: identifier },
+    orWhere: { username: identifier }
+  }).fetch().then(user => {
+    res.json({ user });
+  });
+})
+
 router.post('/', (req, res) => {
-  validateInput(req.body,commonValidations).then((errors,isValid) => {
+  validateInput(req.body,commonValidations).then(({errors,isValid}) => {
     if (!isValid) {
       res.status(400).json(errors);
     } else {

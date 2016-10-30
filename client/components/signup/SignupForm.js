@@ -18,9 +18,12 @@ class SignupForm extends React.Component {
       email: '',
       timezone: '',
       errors: {},
-      isLoading: false
+      isLoading: false,
+      invalid: false
     }
+    // 如果没有此处的bind(this),在这些函数内部的this将为null
     this.onChange = this.onChange.bind(this);
+    this.checkUserExists = this.checkUserExists.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
     this.isValid = this.isValid.bind(this);
   }
@@ -34,11 +37,28 @@ class SignupForm extends React.Component {
     });
   }
 
+  checkUserExists(e){
+    const field = e.target.name;
+    const val = e.target.value;
+    if ( val !== '' ){
+      this.props.isUserExists(val).then(res => {
+        let errors = this.state.errors;
+        let invalid;
+        if (res.data.user){
+          errors[field] = 'There is user with such ' + field;
+          invalid = true;
+        }else {
+          errors[field] = '';
+          invalid = false;
+        }
+        this.setState({ errors,invalid })
+      })
+    }
+
+  }
+
   isValid() {
-    const {
-      errors,
-      isValid
-    } = validateInput(this.state);
+    const { errors, isValid } = validateInput(this.state);
 
     if (!isValid) {
       this.setState({
@@ -54,24 +74,15 @@ class SignupForm extends React.Component {
         errors: {},
         isLoading: true
       });
-      this.props.userSignupRequest(this.state).then(
-        () => {
-          this.props.addFlashMessage(
-            {
+      this.props.userSignupRequest(this.state).then( () => {
+          this.props.addFlashMessage( {
               type:'success',
               text:'You signed up successful.Welcome'
           }
-        )
-          this.context.router.push('/');
-        },
-        ({
-          response: {
-            data
-          }
-        }) => this.setState({
-          errors: data,
-          isLoading: false
-        })
+        );
+        this.context.router.push('/');
+      }, ({ response: { data } }) =>
+           this.setState({ errors: data, isLoading: false })
       );
     }
   }
@@ -88,8 +99,19 @@ class SignupForm extends React.Component {
           error={errors.username}
           label="Username"
           onChange={this.onChange}
+          checkUserExists={this.checkUserExists}
           value={this.state.username}
           field="username"
+        />
+
+        <TextFieldGroup
+          error={errors.email}
+          type='email'
+          label="Email"
+          onChange={this.onChange}
+          checkUserExists={this.checkUserExists}
+          value={this.state.email}
+          field="email"
         />
 
         <TextFieldGroup
@@ -110,15 +132,6 @@ class SignupForm extends React.Component {
           field="passwordConfirmation"
         />
 
-        <TextFieldGroup
-          error={errors.email}
-          type='email'
-          label="Email"
-          onChange={this.onChange}
-          value={this.state.email}
-          field="email"
-        />
-
         <div className={classnames('form-group',{'has-error':errors.timezone})}>
           <label className="control-label" htmlFor="timezone">Timezone</label>
           <select
@@ -133,7 +146,8 @@ class SignupForm extends React.Component {
         </div>
 
         <div className="form-group">
-          <button disabled={this.state.isLoading} className="btn btn-primary btn-lg">
+          <button disabled={this.state.isLoading||this.state.invalid}
+            className="btn btn-primary btn-lg">
             Sign up
           </button>
         </div>
@@ -146,7 +160,8 @@ class SignupForm extends React.Component {
 }
 SignupForm.propTypes = {
   userSignupRequest: React.PropTypes.func.isRequired,
-  addFlashMessage: React.PropTypes.func.isRequired
+  addFlashMessage: React.PropTypes.func.isRequired,
+  isUserExists: React.PropTypes.func.isRequired,
 }
 SignupForm.contextTypes = {
   router: React.PropTypes.object.isRequired
