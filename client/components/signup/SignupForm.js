@@ -26,6 +26,7 @@ class SignupForm extends React.Component {
     this.checkUserExists = this.checkUserExists.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
     this.isValid = this.isValid.bind(this);
+    this.clearError = this.clearError.bind(this);
   }
   onChange(e) {
     this.setState({
@@ -35,6 +36,14 @@ class SignupForm extends React.Component {
        * */
       [e.target.name]: e.target.value
     });
+  }
+
+  clearError(e){
+    const { name: field,value: val } = e.target;
+    let errors = Object.assign({},this.state.errors,{[ field ]:''});
+    //let errors = { ...this.state.errors,field: ''}
+    console.log(errors)
+    this.setState({ errors })
   }
 
   checkUserExists(e){
@@ -67,6 +76,7 @@ class SignupForm extends React.Component {
     }
     return isValid;
   }
+
   onSubmit(e) {
     e.preventDefault();
     if (this.isValid()) {
@@ -121,6 +131,7 @@ class SignupForm extends React.Component {
           onChange={this.onChange}
           value={this.state.password}
           field="password"
+          clearError={this.clearError}
         />
 
         <TextFieldGroup

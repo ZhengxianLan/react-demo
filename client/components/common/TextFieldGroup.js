@@ -8,7 +8,8 @@ export default function TextFieldGroup({
   error,
   type,
   onChange,
-  checkUserExists
+  checkUserExists,
+  clearError
 }){
   return (
 
@@ -17,6 +18,7 @@ export default function TextFieldGroup({
           <input type={type}
             onChange={onChange}
             onBlur={checkUserExists}
+            onFocus={clearError}
             value={value}
             name={field}
             className='form-control'
@@ -34,7 +36,8 @@ TextFieldGroup.propTypes = {
   error: React.PropTypes.string,
   type: React.PropTypes.string.isRequired,
   onChange: React.PropTypes.func.isRequired,
-  onBlur: React.PropTypes.func
+  clearError: React.PropTypes.func,
+  onBlur: React.PropTypes.func,
 }
 
 TextFieldGroup.defaultProps = {
