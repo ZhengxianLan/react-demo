@@ -46,12 +46,7 @@ router.post('/', (req, res) => {
     if (!isValid) {
       res.status(400).json(errors);
     } else {
-      const {
-        username,
-        password,
-        timezone,
-        email
-      } = req.body;
+      const { username, password, timezone, email } = req.body;
       const password_digest = bcrypt.hashSync(password);
 
       User.forge({

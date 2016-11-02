@@ -6,7 +6,7 @@ module.exports = {
     client: 'postgresql',
     connection: {
       database: 'reddice',
-      user:     'lan',
+      user: process.env.LOG_NAME,
       password: ''
     },
     pool: {
